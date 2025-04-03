@@ -5,6 +5,9 @@ def broken_printer(char, filename):
     # TODO
     return ''
 
+def BFS():
+    pass
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
