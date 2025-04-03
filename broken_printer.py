@@ -1,5 +1,5 @@
 import sys
-
+from graph import Graph
 
 def broken_printer(char, filename):
     # TODO
@@ -7,6 +7,8 @@ def broken_printer(char, filename):
 
 def BFS():
     pass
+
+
 
 
 if __name__ == '__main__':
