@@ -10,6 +10,9 @@ def BFS():
 
 
 
+def DFS(color):
+    # current_node
+    pass
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
