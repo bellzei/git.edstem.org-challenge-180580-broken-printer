@@ -1,1 +1,11 @@
 Hello!
+
+Sabika:
+DFS
+IDS
+A*
+
+Bella:
+BFS
+Greedy
+Hill-Climb
