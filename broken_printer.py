@@ -1,5 +1,5 @@
 import sys
-from graph import Graph
+from node import Node
 
 def broken_printer(char, filename):
      
@@ -11,7 +11,7 @@ def broken_printer(char, filename):
     
     color = lines[0]
     legal_states = [state.strip() for state in lines[1].split(',') if state.strip()]
-    illegal_states = [state.strip() for state in lines[2].split(',') if state.strip()]
+    unsafe_states = [state.strip() for state in lines[2].split(',') if state.strip()]
 
     if char == 'B':
         BFS(color)
@@ -28,8 +28,24 @@ def broken_printer(char, filename):
 
     return
 
-def BFS():
+def BFS(color, legal_states, unsafe_states):
+    fringe = []
+    expanded = []
+    node = Node(color, legal_states, unsafe_states)
+    fringe.append(node)
+    if node.state == 'LEGAL':
+        #TODO implement end case
+        return node
+    
+    elif node.state == 'UNSAFE':
+        node = fringe[0]
+        BFS()
 
+
+    pass
+
+def DFS(color):
+    # current_node
     pass
 
 def IDS(color):
@@ -45,9 +61,6 @@ def hillclimb(color):
     pass
 
 
-def DFS(color):
-    # current_node
-    pass
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:
