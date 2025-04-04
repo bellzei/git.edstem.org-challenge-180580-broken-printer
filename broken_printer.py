@@ -1,5 +1,5 @@
 import sys
-from graph import Graph
+from node import Node
 
 def broken_printer(char, filename):
      
@@ -45,8 +45,22 @@ def hillclimb(color):
     pass
 
 
-def DFS(color):
-    # current_node
+def DFS(color, legal_states, unsafe_states):
+    fringe = []
+    expanded = []
+    current_node = Node(color, legal_states, unsafe_states)
+    fringe.append(current_node)
+    if current_node.state != "UNSAFE":
+        current_node.children = current_node.generate_children()
+    
+    if current_node.state =="LEGAL":
+        return
+    elif current_node.state == "UNSAFE":
+        # current_node = fringe[]
+    
+        
+        
+        
     pass
 
 if __name__ == '__main__':

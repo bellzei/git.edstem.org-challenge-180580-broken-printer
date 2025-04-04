@@ -10,6 +10,9 @@ class Node:
         self.path = []
         
     def generate_children(self):
+        
+            
+            
         pass
         
     def calculate_heuristic(self):
