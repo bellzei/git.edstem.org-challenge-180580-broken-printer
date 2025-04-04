@@ -1,5 +1,6 @@
 import sys
 from node import Node
+from node import Node
 
 def broken_printer(char, filename):
      
@@ -11,7 +12,7 @@ def broken_printer(char, filename):
     
     color = lines[0]
     legal_states = [state.strip() for state in lines[1].split(',') if state.strip()]
-    illegal_states = [state.strip() for state in lines[2].split(',') if state.strip()]
+    unsafe_states = [state.strip() for state in lines[2].split(',') if state.strip()]
 
     if char == 'B':
         BFS(color)
@@ -28,8 +29,24 @@ def broken_printer(char, filename):
 
     return
 
-def BFS():
+def BFS(color, legal_states, unsafe_states):
+    fringe = []
+    expanded = []
+    node = Node(color, legal_states, unsafe_states)
+    fringe.append(node)
+    if node.state == 'LEGAL':
+        #TODO implement end case
+        return node
+    
+    elif node.state == 'UNSAFE':
+        node = fringe[0]
+        BFS()
 
+
+    pass
+
+def DFS(color):
+    # current_node
     pass
 
 def IDS(color):
@@ -45,22 +62,8 @@ def hillclimb(color):
     pass
 
 
-def DFS(color, legal_states, unsafe_states):
-    fringe = []
-    expanded = []
-    current_node = Node(color, legal_states, unsafe_states)
-    fringe.append(current_node)
-    if current_node.state != "UNSAFE":
-        current_node.children = current_node.generate_children()
-    
-    if current_node.state =="LEGAL":
-        return
-    elif current_node.state == "UNSAFE":
-        # current_node = fringe[]
-    
-        
-        
-        
+def DFS(color):
+    # current_node
     pass
 
 if __name__ == '__main__':
