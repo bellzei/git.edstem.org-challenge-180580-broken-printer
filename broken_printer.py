@@ -1,6 +1,6 @@
 import sys
 from node import Node
-from node import Node
+from collections import deque
 
 def broken_printer(char, filename):
      
@@ -14,36 +14,54 @@ def broken_printer(char, filename):
     legal_states = [state.strip() for state in lines[1].split(',') if state.strip()]
     unsafe_states = [state.strip() for state in lines[2].split(',') if state.strip()]
 
+
     if char == 'B':
-        BFS(color)
+        return BFS(color, legal_states, unsafe_states)
     if char == 'D':
-        DFS(color)
+        return DFS(color)
     if char == 'I':
-        IDS(color)
+        return IDS(color)
     if char == 'G':
-        greedy(color)
+        return greedy(color)
     if char == 'A':
-        Astar(color)
+        return Astar(color)
     if char == 'H':
-        hillclimb(color)
+        return hillclimb(color)
 
     return
 
 def BFS(color, legal_states, unsafe_states):
-    fringe = []
+    node = Node(color, legal_states, unsafe_states, [])
+    fringe = deque([node])
     expanded = []
-    node = Node(color, legal_states, unsafe_states)
-    fringe.append(node)
-    if node.state == 'LEGAL':
-        #TODO implement end case
-        return node
-    
-    elif node.state == 'UNSAFE':
-        node = fringe[0]
-        BFS()
+    goal_found = False
+    #print(f"legal states: {legal_states}, unsafe states: {unsafe_states}")
 
+    while fringe:   
+        node = fringe.popleft()     # get the next node to expand from the fringe
+        #print(node.color)
+        #print(node.state)
+        if node.state == 'LEGAL':
+            goal_found = True
+            expanded.append(node.color)
+            path = node.path
+            break
 
-    pass
+        elif len(expanded) > 1000:
+            print("SEARCH FAILED")
+            return
+
+        elif node.state != 'UNSAFE' and node.color not in expanded:   # node is valid and has not already been expanded
+            expanded.append(node.color)       # add this node to the list of expanded nodes
+            #print("added node to expanded, generating children now")
+            children = node.generate_children(legal_states, unsafe_states, node.path)     # generating the children 
+            fringe.extend(children)         # adding the children to the fringe
+        
+    if goal_found:
+        return ",".join(f"{pnode}" for pnode in path) + "\n" + ",".join(f"{enode}" for enode in expanded)
+    else:
+        return "SEARCH FAILED"
+
 
 def DFS(color):
     # current_node
@@ -70,7 +88,7 @@ if __name__ == '__main__':
     if len(sys.argv) < 3:
         # You can modify these values to test your code
         char = 'B'
-        filename = 'example1.txt'
+        filename = 'example2.txt'
     else:
         char = sys.argv[1]
         filename = sys.argv[2]
