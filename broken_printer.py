@@ -27,7 +27,7 @@ def broken_printer(char, filename):
     if char == 'A':
         return Astar(color)
     if char == 'H':
-        return hillclimb(color)
+        return hillclimb(color, legal_states, unsafe_states)
 
     return
 
@@ -61,7 +61,7 @@ def BFS(color, legal_states, unsafe_states):
     if goal_found:
         return ",".join(f"{pnode}" for pnode in path) + "\n" + ",".join(f"{enode}" for enode in expanded)
     else:
-        return "SEARCH FAILED"
+        return "SEARCH FAILED" + "\n" + ",".join(f"{enode}" for enode in expanded)
 
 
 def DFS(color):
@@ -109,13 +109,41 @@ def greedy(color, legal_states, unsafe_states):
     if goal_found:
         return ",".join(f"{pnode}" for pnode in path) + "\n" + ",".join(f"{enode}" for enode in expanded)
     else:
-        return "SEARCH FAILED"
+        return "SEARCH FAILED" + "\n" + ",".join(f"{enode}" for enode in expanded)
 
 def Astar(color):
     pass
 
-def hillclimb(color):
-    pass
+def hillclimb(color, legal_states, unsafe_states):
+    current_node = Node(color, legal_states, unsafe_states, [])
+    current_node.calculate_heuristic(legal_states)
+    expanded = []
+    goal_found = False
+
+    while True:
+        if current_node.state != 'UNSAFE' and current_node.color not in expanded:   # node is valid and has not already been expanded
+            expanded.append(current_node.color)
+            neighbours = current_node.generate_children(legal_states, unsafe_states, current_node.path)
+            best_neighbour = current_node
+
+        for neighbour in neighbours:
+            if neighbour.state != "UNSAFE" and neighbour.color not in expanded:
+                neighbour.calculate_heuristic(legal_states)
+                if neighbour.heuristic < best_neighbour.heuristic: # compare nodes
+                    best_neighbour = neighbour
+
+        if best_neighbour == current_node:  # no change, we have reached a local optimum
+            if best_neighbour.state == 'LEGAL':
+                goal_found = True
+                path = best_neighbour.path
+            break
+        
+        current_node = best_neighbour
+
+    if goal_found:
+        return ",".join(f"{pnode}" for pnode in path) + "\n" + ",".join(f"{enode}" for enode in expanded)
+    else:
+        return "SEARCH FAILED" + "\n" + ",".join(f"{enode}" for enode in expanded)
 
 
 def DFS(color):
@@ -125,8 +153,8 @@ def DFS(color):
 if __name__ == '__main__':
     if len(sys.argv) < 3:
         # You can modify these values to test your code
-        char = 'B'
-        filename = 'example1.txt'
+        char = 'H'
+        filename = 'example2.txt'
     else:
         char = sys.argv[1]
         filename = sys.argv[2]

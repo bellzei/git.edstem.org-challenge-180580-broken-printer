@@ -35,8 +35,9 @@ class Node:
         self.heuristic = min(distances)
     
     def check_state(self, legal_states, unsafe_states):
-        if self.color in legal_states:
-            self.state = 'LEGAL'
+        for goal in legal_states:
+            if all(p == 'X' or self.color[i] == p for i, p in enumerate(goal)):
+                self.state = 'LEGAL'
 
         for unsafe_state in unsafe_states:
             if all(p == 'X' or self.color[i] == p for i, p in enumerate(unsafe_state)):
