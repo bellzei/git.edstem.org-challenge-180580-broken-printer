@@ -1,6 +1,7 @@
 import sys
 from node import Node
 from collections import deque
+import heapq
 
 def broken_printer(char, filename):
      
@@ -22,7 +23,7 @@ def broken_printer(char, filename):
     if char == 'I':
         return IDS(color)
     if char == 'G':
-        return greedy(color)
+        return greedy(color, legal_states, unsafe_states)
     if char == 'A':
         return Astar(color)
     if char == 'H':
@@ -70,8 +71,45 @@ def DFS(color):
 def IDS(color):
     pass
 
-def greedy(color):
-    pass
+def greedy(color, legal_states, unsafe_states):
+    counter = 0     # counter for tie breaking
+    node = Node(color, legal_states, unsafe_states, [])
+    node.calculate_heuristic(legal_states)
+    fringe = []
+    heapq.heappush(fringe, (node.heuristic, counter, node))
+    expanded = []
+    goal_found = False
+    counter += 1
+    #print(f"legal states: {legal_states}, unsafe states: {unsafe_states}")
+
+    while fringe:   
+        h, _, node = heapq.heappop(fringe)     # get the next node to expand from the fringe
+        #print(node.color)
+        #print(node.state)
+        if node.state == 'LEGAL':
+            goal_found = True
+            expanded.append(node.color)
+            path = node.path
+            break
+
+        elif len(expanded) > 1000:
+            print("SEARCH FAILED")
+            return
+
+        elif node.state != 'UNSAFE' and node.color not in expanded:   # node is valid and has not already been expanded
+            expanded.append(node.color)       # add this node to the list of expanded nodes
+            #print("added node to expanded, generating children now")
+            children = node.generate_children(legal_states, unsafe_states, node.path)     # generating the children 
+            for child in children:
+                child.calculate_heuristic(legal_states)
+                heapq.heappush(fringe, (child.heuristic, counter, child))   # adding the children to the fringe in ascending order of heuristic
+                counter += 1
+                 
+        
+    if goal_found:
+        return ",".join(f"{pnode}" for pnode in path) + "\n" + ",".join(f"{enode}" for enode in expanded)
+    else:
+        return "SEARCH FAILED"
 
 def Astar(color):
     pass
@@ -87,7 +125,7 @@ def DFS(color):
 if __name__ == '__main__':
     if len(sys.argv) < 3:
         # You can modify these values to test your code
-        char = 'B'
+        char = 'G'
         filename = 'example2.txt'
     else:
         char = sys.argv[1]

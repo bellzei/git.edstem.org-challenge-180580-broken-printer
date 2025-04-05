@@ -34,8 +34,12 @@ class Node:
             children.append(child)
         return children
 
-    def calculate_heuristic(self):
-        pass
+    def calculate_heuristic(self, legal_states):
+        distances = []
+        for goal in legal_states:
+            hammingDistance = sum(1 for bit1, bit2 in zip(self.color, goal) if bit2 != 'X' and bit1 != bit2)    # higher heuristic for more differences
+            distances.append(hammingDistance)
+        self.heuristic = min(distances)
     
     def check_state(self, legal_states, unsafe_states):
         if self.color in legal_states:
