@@ -6,15 +6,15 @@ import heapq
 def broken_printer(char, filename):
 
     with open(filename, 'r') as file:
-        lines = [line.strip() for line in file if line.strip()] # Read all lines and strip any trailing newline characters
+        lines = [line.strip() for line in file] # Read all lines and strip any trailing newline characters
 
         if len(lines) < 3:  # Ensure the file contains at least three lines
             raise ValueError("Input file must have at least three non-empty lines.")
 
     color = lines[0]
-    legal_states = [state.strip() for state in lines[1].split(',') if state.strip()]
-    unsafe_states = [state.strip() for state in lines[2].split(',') if state.strip()]
-
+    legal_states = [] if lines[1] == "" else [state.strip() for state in lines[1].split(',')]
+    unsafe_states = [] if lines[2] == "" else [state.strip() for state in lines[2].split(',')]
+    
 
     if char == 'B':
         return BFS(color, legal_states, unsafe_states)
