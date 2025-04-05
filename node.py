@@ -13,17 +13,10 @@ class Node:
         
     def generate_children(self, legal_states, unsafe_states, path):
         children_colors = []
-        color = self.color
-        for i in range(len(self.color)):       # sorry this is super inefficient i think but just gonna use it for now
-            child = ''
-            for j in range(len(self.color)):
-                if i == j:
-                    if self.color[i] == '1':
-                        child += '0'
-                    elif self.color[i] == '0':
-                        child += '1'
-                else: 
-                    child += self.color[j]
+
+        for i in range(len(self.color)):
+            flipped_bit = '1' if self.color[i] == '0' else '0'   # flip the bit at position i
+            child = self.color[:i] + flipped_bit + self.color[i+1:]
             children_colors.append(child)
         #print(f"node: {self.color}, childen: {children_colors}")
         #cont = input("continue? ")

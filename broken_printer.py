@@ -4,13 +4,13 @@ from collections import deque
 import heapq
 
 def broken_printer(char, filename):
-     
+
     with open(filename, 'r') as file:
         lines = [line.strip() for line in file if line.strip()] # Read all lines and strip any trailing newline characters
-    
+
         if len(lines) < 3:  # Ensure the file contains at least three lines
             raise ValueError("Input file must have at least three non-empty lines.")
-    
+
     color = lines[0]
     legal_states = [state.strip() for state in lines[1].split(',') if state.strip()]
     unsafe_states = [state.strip() for state in lines[2].split(',') if state.strip()]
@@ -38,7 +38,7 @@ def BFS(color, legal_states, unsafe_states):
     goal_found = False
     #print(f"legal states: {legal_states}, unsafe states: {unsafe_states}")
 
-    while fringe:   
+    while fringe:
         node = fringe.popleft()     # get the next node to expand from the fringe
         #print(node.color)
         #print(node.state)
@@ -55,9 +55,9 @@ def BFS(color, legal_states, unsafe_states):
         elif node.state != 'UNSAFE' and node.color not in expanded:   # node is valid and has not already been expanded
             expanded.append(node.color)       # add this node to the list of expanded nodes
             #print("added node to expanded, generating children now")
-            children = node.generate_children(legal_states, unsafe_states, node.path)     # generating the children 
+            children = node.generate_children(legal_states, unsafe_states, node.path)     # generating the children
             fringe.extend(children)         # adding the children to the fringe
-        
+
     if goal_found:
         return ",".join(f"{pnode}" for pnode in path) + "\n" + ",".join(f"{enode}" for enode in expanded)
     else:
@@ -82,7 +82,7 @@ def greedy(color, legal_states, unsafe_states):
     counter += 1
     #print(f"legal states: {legal_states}, unsafe states: {unsafe_states}")
 
-    while fringe:   
+    while fringe:
         h, _, node = heapq.heappop(fringe)     # get the next node to expand from the fringe
         #print(node.color)
         #print(node.state)
@@ -99,13 +99,13 @@ def greedy(color, legal_states, unsafe_states):
         elif node.state != 'UNSAFE' and node.color not in expanded:   # node is valid and has not already been expanded
             expanded.append(node.color)       # add this node to the list of expanded nodes
             #print("added node to expanded, generating children now")
-            children = node.generate_children(legal_states, unsafe_states, node.path)     # generating the children 
+            children = node.generate_children(legal_states, unsafe_states, node.path)     # generating the children
             for child in children:
                 child.calculate_heuristic(legal_states)
                 heapq.heappush(fringe, (child.heuristic, counter, child))   # adding the children to the fringe in ascending order of heuristic
                 counter += 1
-                 
-        
+
+
     if goal_found:
         return ",".join(f"{pnode}" for pnode in path) + "\n" + ",".join(f"{enode}" for enode in expanded)
     else:
@@ -125,8 +125,8 @@ def DFS(color):
 if __name__ == '__main__':
     if len(sys.argv) < 3:
         # You can modify these values to test your code
-        char = 'G'
-        filename = 'example2.txt'
+        char = 'B'
+        filename = 'example1.txt'
     else:
         char = sys.argv[1]
         filename = sys.argv[2]
