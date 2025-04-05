@@ -37,6 +37,3 @@ class Node:
         elif self.color in unsafe_states:
             #TODO deal with X values 
             self.state = 'UNSAFE'
-        
-
-    
