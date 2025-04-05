@@ -49,8 +49,7 @@ def BFS(color, legal_states, unsafe_states):
             break
 
         elif len(expanded) > 1000:
-            print("SEARCH FAILED")
-            return
+            return "SEARCH FAILED" + "\n" + ",".join(f"{enode}" for enode in expanded)
 
         elif node.state != 'UNSAFE' and node.color not in expanded:   # node is valid and has not already been expanded
             expanded.append(node.color)       # add this node to the list of expanded nodes
@@ -153,8 +152,8 @@ def DFS(color):
 if __name__ == '__main__':
     if len(sys.argv) < 3:
         # You can modify these values to test your code
-        char = 'H'
-        filename = 'example2.txt'
+        char = 'B'
+        filename = 'example3.txt'
     else:
         char = sys.argv[1]
         filename = sys.argv[2]
