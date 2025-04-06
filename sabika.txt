@@ -6,6 +6,6 @@ IDS
 A*
 
 Bella:
-BFS
+BFS /
 Greedy
 Hill-Climb
