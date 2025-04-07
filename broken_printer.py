@@ -108,17 +108,6 @@ def DFS(color, legal_states, unsafe_states):
 
 
 def DFS_limited(color, legal_states, unsafe_states, depth_limit, expanded):
-    """
-    A depth-limited version of DFS (using your DFS style). 
-    It stops expanding nodes if the depth (determined by the length of the node's path) reaches depth_limit.
-    Any node with a depth equal to the limit is treated as a fringe node:
-      - Its state is checked and recorded (if not UNSAFE),
-      - But its children are not expanded.
-    The 'expanded' list is passed by reference and updated with every node (non-UNSAFE) that is visited.
-    Returns:
-      - the solution node if a LEGAL state is found,
-      - or "cutoff" if no solution was found within the current depth limit.
-    """
     fringe = []
     # Create root node. Its constructor already sets its path as path + [color]
     root = Node(color, legal_states, unsafe_states, [])
@@ -172,14 +161,7 @@ def DFS_limited(color, legal_states, unsafe_states, depth_limit, expanded):
 
 
 def IDS(color, legal_states, unsafe_states):
-    """
-    Iterative Deepening Search using DFS_limited as a base.
-    Repeatedly calls DFS_limited with an increasing depth limit.
-    Accumulates (by reference) all nodes visited (that are not UNSAFE) in 'total_expanded'.
-    Returns a string with two lines:
-      - Line 1: a comma-separated path from the start state to the goal (or "SEARCH FAILED")
-      - Line 2: a comma-separated list of node colors in the order they were expanded.
-    """
+
     depth_limit = 1  # Start with a depth limit of 1 (i.e. only the root is expanded)
     total_expanded = []   # Cumulative list of nodes (instances) expanded across iterations
 
