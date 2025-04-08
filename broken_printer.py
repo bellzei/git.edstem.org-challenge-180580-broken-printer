@@ -107,72 +107,115 @@ def DFS(color, legal_states, unsafe_states):
         return "SEARCH FAILED" + "\n" + ",".join(n.color for n in expanded)
 
 
-def DFS_limited(color, legal_states, unsafe_states, depth_limit, expanded):
+def DFS_limited(color, legal_states, unsafe_states, depth_limit, total_expanded, found):
     fringe = []
-    # Create root node. Its constructor already sets its path as path + [color]
+    expanded = []
     root = Node(color, legal_states, unsafe_states, [])
     fringe.append(root)
     node_count = 0
     solution = None
+    
+    # print("depth: " + str(depth_limit))
 
-    while fringe:
+    while fringe and found == False:
         current_node = fringe.pop()
-        
-        # If we've reached or exceeded the depth limit (root has depth 0, so len(path)-1 gives depth)
-        if (len(current_node.path)) >= depth_limit:
-            # Check the node's state and record it if it is not UNSAFE.
-            current_node.check_state(legal_states, unsafe_states)
-            if current_node.state != "UNSAFE":
-                expanded.append(current_node)
-                if current_node.state == "LEGAL":
-                    solution = current_node
-                    break
-            # Do not expand further from this node.
-            continue
+        # print("current node " + current_node.color)
 
-        # Otherwise, process the node normally.
-        current_node.check_state(legal_states, unsafe_states)
-        if current_node.state == "LEGAL":
-            expanded.append(current_node)
-            solution = current_node
+        
+        # Check node expansion limit
+        if node_count > 1000:
+            # return "SEARCH FAILED" + "\n" + ",".join(n.color for n in expanded)
             break
-        if current_node.state == "UNSAFE":
+        
+        current_node.check_state(legal_states, unsafe_states)
+        if len(current_node.path) >= depth_limit:
+            if current_node.state == "LEGAL":
+                solution = current_node
+                found = True
+                expanded.append(current_node)
+            elif current_node.state != "UNSAFE":
+                # solution = current_node
+                expanded.append(current_node)
+                # break
+            elif current_node.state == "LEGAL":
+                solution = current_node
+                found = True
+                expanded.append(current_node)
+            # print("expanded: ")
+            # for node in expanded:
+            #     # print(node.color)
+                
+        # If the node is UNSAFE, skip expanding it.
+            # elif current_node.state == "UNSAFE":
+            #     continue
+            continue
+        # If current node is a goal, record solution and add it to expanded.
+        if current_node.state == "LEGAL":
+            solution = current_node
+            expanded.append(current_node)
+            break
+        # If the node is UNSAFE, skip expanding it.
+        elif current_node.state == "UNSAFE":
             continue
         
+        # Expand the current node.
         expanded.append(current_node)
         node_count += 1
         
-        # Generate children if within depth limit.
+        # Generate children (flipping bits in ascending order)
         children = current_node.generate_children(legal_states, unsafe_states, current_node.path)
-        # For DFS, push children in reverse order so that the leftmost (first bit flip) is expanded first.
+        # For DFS, push children in reverse order so that the one with the smallest index is expanded first.
+        
         for child in reversed(children):
-            # Avoid cycles: if the child's color already appears in the current path, skip it.
-            if child.color in current_node.path:
-                continue
-            # Update child's path.
-            # child.path = current_node.path + [child.color]
-            fringe.append(child)
+            repeated = False
+            # Avoid cycles: if the child’s color is already in the current path, skip it.
+            for node in expanded:
+                if child.color == node.color:
+                    repeated = True
+            if repeated == False:
+                fringe.append(child)
             
+                
+        # print("expanded: ")
+        # for node in expanded:
+        #     print(node.color)
+            
+        # print("fringe: ")
+        # for node in fringe:
+        #     print(node.color)
+    
+    # if solution:
+    #     # Format: first line is the path, second line is the expanded node order.
+    #     return ",".join(solution.path) + "\n" + ",".join(n.color for n in expanded)
+    # else:
+    #     return "SEARCH FAILED" + "\n" + ",".join(n.color for n in expanded)
+            
+    for node in expanded:
+        total_expanded.append(node)
     if solution:
-        return solution
+       
+        found = True
+        return solution, found
     else:
-        return "cutoff"
+        return None, found
 
 
 
 def IDS(color, legal_states, unsafe_states):
 
     depth_limit = 1  # Start with a depth limit of 1 (i.e. only the root is expanded)
-    total_expanded = []   # Cumulative list of nodes (instances) expanded across iterations
+    total_expanded = [] # Cumulative list of nodes (instances) expanded across iterations
+    found = False
 
     while True:
-        result = DFS_limited(color, legal_states, unsafe_states, depth_limit, total_expanded)
-        if result != "cutoff" and result is not None:
+        result, found = DFS_limited(color, legal_states, unsafe_states, depth_limit, total_expanded, found)
+        if found != False and result is not None:
             # Found a solution: join the path and the cumulative expanded list.
             return ",".join(result.path) + "\n" + ",".join(n.color for n in total_expanded)
         if len(total_expanded) > 1000:
             return "SEARCH FAILED" + "\n" + ",".join(n.color for n in total_expanded)
         depth_limit += 1
+        # print("")
 
 
 def greedy(color, legal_states, unsafe_states):
